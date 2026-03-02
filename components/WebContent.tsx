@@ -124,7 +124,7 @@ export default function WebContent() {
           <Job company="Dapper Labs" role="Senior Software Engineer · Remote / Toronto" dates="May 2022 – Present"
             tags={['TypeScript','React','Next.js','React Native (Expo)','GraphQL','XState','TailwindCSS','TanStack Query']}>
             <p>
-              Worked across consumer products: marketplaces, onboarding, marketing pages, challenges, leaderboards.
+              Built features across Dapper's IP products (NBA, NFL, Disney): marketplaces, onboarding, marketing pages, challenges, leaderboards.
               The biggest one was the marketplace revamp: started from a blank slate on the UX,
               saw it through to shipping, and kept iterating after.
             </p>

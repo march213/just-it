@@ -53,6 +53,7 @@ export default function ResumePage() {
           <p className="text-xs uppercase tracking-[0.18em] text-violet-700 font-mono mb-3">Experience</p>
 
           <PrintJob company="Dapper Labs" role="Senior Software Engineer · Remote / Toronto" dates="May 2022 – Present">
+            <li>Built features across Dapper's IP products (NBA, NFL, Disney): marketplaces, onboarding, marketing pages, challenges, leaderboards</li>
             <li>Led marketplace revamp from blank-slate UX to shipping, then kept iterating</li>
             <li>Rebuilt FTUE/onboarding: <strong>~0.4–0.6% to 1.6% conversion</strong> through flow simplification and data-driven iteration</li>
             <li>One of the founding engineers on the shared platform powering all Dapper products: common infrastructure, unified codebase, theme support across brands</li>
