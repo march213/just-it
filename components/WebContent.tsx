@@ -38,7 +38,7 @@ export default function WebContent() {
 
       <a
         href="/"
-        className="fixed top-7 left-7 z-50 font-mono text-[10px] tracking-[0.14em] uppercase text-white/40 hover:text-white/70 transition-colors duration-200"
+        className="fixed top-7 left-7 z-50 font-mono text-xs tracking-[0.14em] uppercase text-white/40 hover:text-white/70 transition-colors duration-200"
       >
         ← Home
       </a>
