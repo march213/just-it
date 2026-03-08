@@ -1,10 +1,13 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, createContext, useContext } from 'react'
 import { motion, useInView } from 'motion/react'
 import { AnimateNumber, Ticker } from 'motion-plus/react'
 import ExportButton from './ExportButton'
 import { METRICS, STORIES, TESTIMONIALS, STACK, JOBS } from '@/lib/data'
+import { useReducedMotion } from '@/lib/useReducedMotion'
+
+const ReducedMotionContext = createContext(false)
 
 /* ─────────────────────────────────────────────────────────
  * ANIMATION STORYBOARD — Resume / Story Page
@@ -115,25 +118,42 @@ const VP = { once: true, margin: '-60px 0px' as const }
 
 /* ─── Component ───────────────────────────────────────────────────── */
 
+const INTRO_KEY = 'just-it:resume-intro-seen'
+
 export default function WebContent() {
   /* Hero stage */
   const heroRef = useRef<HTMLElement>(null)
   const heroInView = useInView(heroRef, { once: true })
+  const reduced = useReducedMotion()
   const [stage, setStage] = useState(0)
+  const [skipIntro, setSkipIntro] = useState(false)
 
   useEffect(() => {
-    if (!heroInView) { setStage(0); return }
+    if (sessionStorage.getItem(INTRO_KEY)) {
+      setSkipIntro(true)
+      setStage(4)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!heroInView || skipIntro || reduced) return
 
     setStage(0)
     const t: NodeJS.Timeout[] = []
     t.push(setTimeout(() => setStage(1), HERO_TIMING.role))
     t.push(setTimeout(() => setStage(2), HERO_TIMING.name))
     t.push(setTimeout(() => setStage(3), HERO_TIMING.subtitle))
-    t.push(setTimeout(() => setStage(4), HERO_TIMING.links))
+    t.push(setTimeout(() => {
+      setStage(4)
+      sessionStorage.setItem(INTRO_KEY, '1')
+    }, HERO_TIMING.links))
     return () => t.forEach(clearTimeout)
-  }, [heroInView])
+  }, [heroInView, skipIntro, reduced])
+
+  const noMotion = reduced || skipIntro
 
   return (
+    <ReducedMotionContext.Provider value={reduced}>
     <article className="print:hidden">
       {/* Bottom blur vignette */}
       <div
@@ -145,10 +165,10 @@ export default function WebContent() {
         }}
       />
 
-      <nav aria-label="Page navigation" className="fixed top-7 left-7 z-50">
+      <nav aria-label="Page navigation" className="fixed top-4 left-4 sm:top-7 sm:left-7 z-50">
         <a
           href="/"
-          className="font-mono text-xs tracking-[0.14em] uppercase text-white/40 hover:text-white/70 transition-colors duration-200"
+          className="min-h-11 min-w-11 inline-flex items-center justify-center px-3 rounded-sm font-mono text-xs tracking-[0.14em] uppercase text-white/55 hover:text-white/80 transition-colors duration-200"
         >
           ← Home
         </a>
@@ -160,9 +180,9 @@ export default function WebContent() {
         <div className="mb-10">
           {/* Role */}
           <motion.p
-            initial={{ opacity: 0, y: HERO_ROLE.offsetY }}
+            initial={noMotion ? false : { opacity: 0, y: HERO_ROLE.offsetY }}
             animate={{ opacity: stage >= 1 ? 1 : 0, y: stage >= 1 ? 0 : HERO_ROLE.offsetY }}
-            transition={HERO_ROLE.spring}
+            transition={noMotion ? { duration: 0 } : HERO_ROLE.spring}
             className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-5"
           >
             Senior Software Engineer
@@ -170,19 +190,19 @@ export default function WebContent() {
 
           {/* Name */}
           <motion.h1
-            initial={{ opacity: 0, y: HERO_NAME.offsetY }}
+            initial={noMotion ? false : { opacity: 0, y: HERO_NAME.offsetY }}
             animate={{ opacity: stage >= 2 ? 1 : 0, y: stage >= 2 ? 0 : HERO_NAME.offsetY }}
-            transition={HERO_NAME.spring}
-            className="font-light text-[clamp(36px,9vw,96px)] leading-[0.95] tracking-[-0.02em] text-white mb-7"
+            transition={noMotion ? { duration: 0 } : HERO_NAME.spring}
+            className="font-light text-[clamp(36px,9vw,96px)] leading-[0.95] tracking-[-0.02em] text-white mb-7 text-wrap-balance"
           >
             Jane<br />Molodetskaya
           </motion.h1>
 
           {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: HERO_SUB.offsetY }}
+            initial={noMotion ? false : { opacity: 0, y: HERO_SUB.offsetY }}
             animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : HERO_SUB.offsetY }}
-            transition={HERO_SUB.spring}
+            transition={noMotion ? { duration: 0 } : HERO_SUB.spring}
             className="font-body font-normal text-white/85 text-lg max-w-[520px] leading-[1.72]"
           >
             Product engineer, 8 years in.
@@ -191,13 +211,14 @@ export default function WebContent() {
         </div>
 
         {/* Contact links */}
-        <address className="not-italic flex flex-wrap gap-x-7 gap-y-2 font-mono text-xs text-white/55">
+        <address className="not-italic flex flex-wrap gap-x-7 font-mono text-xs text-white/55">
           {HERO_LINKS.items.map(({ label, href }, i) => (
             <motion.span
               key={label}
-              initial={{ opacity: 0, y: HERO_LINKS.offsetY }}
+              className="min-h-11 inline-flex items-center"
+              initial={noMotion ? false : { opacity: 0, y: HERO_LINKS.offsetY }}
               animate={{ opacity: stage >= 4 ? 1 : 0, y: stage >= 4 ? 0 : HERO_LINKS.offsetY }}
-              transition={{ ...HERO_LINKS.spring, delay: i * HERO_LINKS.stagger }}
+              transition={noMotion ? { duration: 0 } : { ...HERO_LINKS.spring, delay: i * HERO_LINKS.stagger }}
             >
               {href
                 ? <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="hover:text-white/90 transition-colors duration-200">{label}</a>
@@ -299,6 +320,7 @@ export default function WebContent() {
         </footer>
       </div>
     </article>
+    </ReducedMotionContext.Provider>
   )
 }
 
@@ -311,6 +333,7 @@ export default function WebContent() {
 function MetricGrid() {
   const ref = useRef<HTMLDListElement>(null)
   const isInView = useInView(ref, VP)
+  const reduced = useContext(ReducedMotionContext)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -322,13 +345,13 @@ function MetricGrid() {
       {METRICS.map((m, i) => (
         <motion.div
           key={m.label}
-          initial={{ opacity: 0, y: METRIC_CARD.offsetY }}
+          initial={reduced ? false : { opacity: 0, y: METRIC_CARD.offsetY }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ ...METRIC_CARD.spring, delay: i * METRIC_CARD.stagger }}
+          transition={reduced ? { duration: 0 } : { ...METRIC_CARD.spring, delay: i * METRIC_CARD.stagger }}
         >
-          <dd className="font-display font-light text-[clamp(38px,5vw,60px)] text-white leading-none mb-2">
+          <dd className="font-display font-light text-[clamp(38px,5vw,60px)] text-white leading-none mb-2 tabular-nums">
             {m.prefix}
-            <AnimateNumber transition={METRIC_CARD.numberTransition}>
+            <AnimateNumber transition={reduced ? { duration: 0 } : METRIC_CARD.numberTransition}>
               {visible ? m.num : 0}
             </AnimateNumber>
             <span className="text-[0.55em] text-white/70">{m.suffix}</span>
@@ -346,6 +369,7 @@ function MetricGrid() {
 function StoryCards() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, VP)
+  const reduced = useContext(ReducedMotionContext)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -357,9 +381,9 @@ function StoryCards() {
       {STORIES.map((s, i) => (
         <motion.article
           key={s.title}
-          initial={{ opacity: 0, y: STORY_CARD.offsetY }}
+          initial={reduced ? false : { opacity: 0, y: STORY_CARD.offsetY }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ ...STORY_CARD.spring, delay: i * STORY_CARD.stagger }}
+          transition={reduced ? { duration: 0 } : { ...STORY_CARD.spring, delay: i * STORY_CARD.stagger }}
           className="border-l border-white/[0.12] pl-6"
         >
           <h3 className="font-display font-normal text-lg text-white mb-2">
@@ -379,6 +403,7 @@ function StoryCards() {
 function QuoteTicker() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, VP)
+  const reduced = useContext(ReducedMotionContext)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -388,9 +413,9 @@ function QuoteTicker() {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0 }}
+      initial={reduced ? false : { opacity: 0 }}
       animate={visible ? { opacity: 1 } : {}}
-      transition={QUOTE_TICKER.spring}
+      transition={reduced ? { duration: 0 } : QUOTE_TICKER.spring}
     >
       <Ticker
         velocity={QUOTE_TICKER.velocity}
@@ -398,15 +423,13 @@ function QuoteTicker() {
         gap={QUOTE_TICKER.gap}
         fade={QUOTE_TICKER.fade}
         loop
-        drag="x"
         align="stretch"
         className="[&_li]:!h-auto [&_li]:!self-stretch"
-        style={{ cursor: 'grab' }}
         items={TESTIMONIALS.map((t, i) => (
           <blockquote
             key={i}
             className="flex flex-col justify-between rounded-lg bg-white/10 border border-white/[0.08] px-6 py-5 select-none"
-            style={{ width: QUOTE_TICKER.cardWidth, height: '100%' }}
+            style={{ width: `min(${QUOTE_TICKER.cardWidth}px, calc(100vw - 48px))`, height: '100%' }}
           >
             <p className="font-body font-light italic text-base text-white/80 leading-[1.75] mb-4">
               &ldquo;{t.quote}&rdquo;
@@ -426,6 +449,7 @@ function QuoteTicker() {
 function JobEntry({ job }: { job: typeof JOBS[number] }) {
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref, VP)
+  const reduced = useContext(ReducedMotionContext)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -439,9 +463,9 @@ function JobEntry({ job }: { job: typeof JOBS[number] }) {
     >
       {/* Header row */}
       <motion.div
-        initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+        initial={reduced ? false : { opacity: 0, y: JOB_ENTRY.offsetY }}
         animate={visible ? { opacity: 1, y: 0 } : {}}
-        transition={JOB_ENTRY.spring}
+        transition={reduced ? { duration: 0 } : JOB_ENTRY.spring}
         className="flex justify-between items-baseline flex-wrap gap-x-4 gap-y-1 mb-1.5"
       >
         <h3 className="font-display font-light text-2xl text-white tracking-tight">{job.company}</h3>
@@ -450,9 +474,9 @@ function JobEntry({ job }: { job: typeof JOBS[number] }) {
 
       {/* Role */}
       <motion.p
-        initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+        initial={reduced ? false : { opacity: 0, y: JOB_ENTRY.offsetY }}
         animate={visible ? { opacity: 1, y: 0 } : {}}
-        transition={{ ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger }}
+        transition={reduced ? { duration: 0 } : { ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger }}
         className="font-mono text-xs tracking-[0.08em] uppercase text-white/50 mb-5"
       >
         {job.role}
@@ -463,9 +487,9 @@ function JobEntry({ job }: { job: typeof JOBS[number] }) {
         {job.bullets.map((b, i) => (
           <motion.li
             key={i}
-            initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+            initial={reduced ? false : { opacity: 0, y: JOB_ENTRY.offsetY }}
             animate={visible ? { opacity: 1, y: 0 } : {}}
-            transition={{ ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger * (i + 2) }}
+            transition={reduced ? { duration: 0 } : { ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger * (i + 2) }}
           >
             {b}
           </motion.li>
@@ -476,9 +500,9 @@ function JobEntry({ job }: { job: typeof JOBS[number] }) {
       {job.tags && (
         <motion.ul
           aria-label={`Technologies at ${job.company}`}
-          initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+          initial={reduced ? false : { opacity: 0, y: JOB_ENTRY.offsetY }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger * (job.bullets.length + 2) }}
+          transition={reduced ? { duration: 0 } : { ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger * (job.bullets.length + 2) }}
           className="flex flex-wrap gap-1.5 mt-5 list-none"
         >
           {job.tags.map(t => (
@@ -497,6 +521,7 @@ function JobEntry({ job }: { job: typeof JOBS[number] }) {
 function StackList() {
   const ref = useRef<HTMLDListElement>(null)
   const isInView = useInView(ref, VP)
+  const reduced = useContext(ReducedMotionContext)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -508,9 +533,9 @@ function StackList() {
       {STACK.map(([cat, val], i) => (
         <motion.div
           key={cat}
-          initial={{ opacity: 0, y: STACK_ROW.offsetY }}
+          initial={reduced ? false : { opacity: 0, y: STACK_ROW.offsetY }}
           animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ ...STACK_ROW.spring, delay: i * STACK_ROW.stagger }}
+          transition={reduced ? { duration: 0 } : { ...STACK_ROW.spring, delay: i * STACK_ROW.stagger }}
           className="grid grid-cols-[120px_1fr] gap-4 items-baseline"
         >
           <dt className="font-mono text-xs text-white/50">{cat}</dt>
@@ -536,6 +561,7 @@ function Divider() {
 function Reveal({ children, className }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, VP)
+  const reduced = useContext(ReducedMotionContext)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -545,9 +571,9 @@ function Reveal({ children, className }: { children: React.ReactNode; className?
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 10 }}
+      initial={reduced ? false : { opacity: 0, y: 10 }}
       animate={visible ? { opacity: 1, y: 0 } : {}}
-      transition={SECTION_SPRING}
+      transition={reduced ? { duration: 0 } : SECTION_SPRING}
       className={className}
     >
       {children}

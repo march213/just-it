@@ -12,7 +12,7 @@ export default function ExportButton() {
         bg-accent/[0.07] border border-accent/[0.18]
         px-4 py-2.5 rounded-sm
         backdrop-blur-md
-        transition-all duration-200
+        transition-colors duration-200
         hover:bg-accent/[0.14] hover:border-accent/40 hover:text-accent-w
         print:hidden
       "

@@ -21,7 +21,7 @@ export default function ResumePage() {
       <article className="hidden print:block font-body text-neutral-900 leading-normal">
         {/* Header */}
         <header className="mb-6 pb-4 border-b border-neutral-300">
-          <h1 className="text-4xl font-light tracking-tight text-neutral-950 mb-1">
+          <h1 className="text-4xl font-light tracking-tight text-neutral-950 mb-1 text-wrap-balance">
             Jane Molodetskaya
           </h1>
           <p className="text-xs uppercase tracking-[0.12em] text-violet-700 mb-3 font-mono">

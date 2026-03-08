@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { motion, useInView } from 'motion/react'
 import { useRef, useState, useEffect } from 'react'
+import { useReducedMotion } from '@/lib/useReducedMotion'
 
 /* ─────────────────────────────────────────────────────────
  * ANIMATION STORYBOARD — Landing Page
@@ -44,46 +45,62 @@ const LINKS = {
   ],
 }
 
+const INTRO_KEY = 'just-it:home-intro-seen'
+
 export default function Home() {
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref, { once: true })
+  const reduced = useReducedMotion()
   const [stage, setStage] = useState(0)
+  const [skipIntro, setSkipIntro] = useState(false)
 
   useEffect(() => {
-    if (!isInView) { setStage(0); return }
+    if (sessionStorage.getItem(INTRO_KEY)) {
+      setSkipIntro(true)
+      setStage(3)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isInView || skipIntro || reduced) return
 
     setStage(0)
     const timers: NodeJS.Timeout[] = []
     timers.push(setTimeout(() => setStage(1), TIMING.name))
     timers.push(setTimeout(() => setStage(2), TIMING.subtitle))
-    timers.push(setTimeout(() => setStage(3), TIMING.links))
+    timers.push(setTimeout(() => {
+      setStage(3)
+      sessionStorage.setItem(INTRO_KEY, '1')
+    }, TIMING.links))
     return () => timers.forEach(clearTimeout)
-  }, [isInView])
+  }, [isInView, skipIntro, reduced])
+
+  const noMotion = reduced || skipIntro
 
   return (
     <main ref={ref} className="relative z-10 min-h-screen flex flex-col px-8 sm:px-16 max-w-5xl mx-auto">
       <header className="flex-1 flex flex-col justify-center py-20">
         {/* Name */}
         <motion.h1
-          initial={{ opacity: 0, y: NAME.offsetY }}
+          initial={noMotion ? false : { opacity: 0, y: NAME.offsetY }}
           animate={{
             opacity: stage >= 1 ? 1 : 0,
             y:       stage >= 1 ? 0 : NAME.offsetY,
           }}
-          transition={NAME.spring}
-          className="font-light text-[clamp(36px,9vw,96px)] leading-[0.95] tracking-[-0.02em] text-white mb-7"
+          transition={noMotion ? { duration: 0 } : NAME.spring}
+          className="font-light text-[clamp(36px,9vw,96px)] leading-[0.95] tracking-[-0.02em] text-white mb-7 text-wrap-balance"
         >
           Jane<br />Molodetskaya
         </motion.h1>
 
         {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0, y: SUBTITLE.offsetY }}
+          initial={noMotion ? false : { opacity: 0, y: SUBTITLE.offsetY }}
           animate={{
             opacity: stage >= 2 ? 1 : 0,
             y:       stage >= 2 ? 0 : SUBTITLE.offsetY,
           }}
-          transition={SUBTITLE.spring}
+          transition={noMotion ? { duration: 0 } : SUBTITLE.spring}
           className="font-normal text-white/85 text-lg max-w-[520px] leading-[1.72]"
         >
           Product engineer, 8 years in. I think in flows, ship with craft,
@@ -97,27 +114,27 @@ export default function Home() {
             {LINKS.items.map(({ label, href }, i) => (
               <motion.li
                 key={label}
-                initial={{ opacity: 0, y: LINKS.offsetY }}
+                initial={noMotion ? false : { opacity: 0, y: LINKS.offsetY }}
                 animate={{
                   opacity: stage >= 3 ? 1 : 0,
                   y:       stage >= 3 ? 0 : LINKS.offsetY,
                 }}
-                transition={{ ...LINKS.spring, delay: i * LINKS.stagger }}
+                transition={noMotion ? { duration: 0 } : { ...LINKS.spring, delay: i * LINKS.stagger }}
               >
-                <a href={href} target="_blank" rel="noopener noreferrer" className="hover:text-white/90 transition-colors duration-200">
+                <a href={href} target="_blank" rel="noopener noreferrer" className="min-h-11 inline-flex items-center hover:text-white/90 transition-colors duration-200">
                   {label}
                 </a>
               </motion.li>
             ))}
             <motion.li
-              initial={{ opacity: 0, y: LINKS.offsetY }}
+              initial={noMotion ? false : { opacity: 0, y: LINKS.offsetY }}
               animate={{
                 opacity: stage >= 3 ? 1 : 0,
                 y:       stage >= 3 ? 0 : LINKS.offsetY,
               }}
-              transition={{ ...LINKS.spring, delay: LINKS.items.length * LINKS.stagger }}
+              transition={noMotion ? { duration: 0 } : { ...LINKS.spring, delay: LINKS.items.length * LINKS.stagger }}
             >
-              <Link href="/resume" className="hover:text-white/90 transition-colors duration-200">
+              <Link href="/resume" className="min-h-11 inline-flex items-center hover:text-white/90 transition-colors duration-200">
                 See my work →
               </Link>
             </motion.li>
