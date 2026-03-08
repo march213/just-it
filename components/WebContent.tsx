@@ -1,34 +1,143 @@
 'use client'
 
-import { motion, Variants } from 'motion/react'
+import { useRef, useState, useEffect } from 'react'
+import { motion, useInView } from 'motion/react'
+import { AnimateNumber, Ticker } from 'motion-plus/react'
 import ExportButton from './ExportButton'
-import { METRICS, STACK } from '@/lib/data'
+import { METRICS, STORIES, TESTIMONIALS, STACK, JOBS } from '@/lib/data'
 
-/* ─── Variants ────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────
+ * ANIMATION STORYBOARD — Resume / Story Page
+ *
+ * HERO (mount-triggered, stage-driven):
+ *    0ms   waiting for mount
+ *  100ms   role label fades in
+ *  250ms   name springs in (y 12 → 0)
+ *  500ms   subtitle reveals
+ *  800ms   contact links stagger (80ms each)
+ *
+ * SCROLL SECTIONS (viewport-triggered):
+ *  about    → paragraph springs in on scroll
+ *  metrics  → cards stagger in, numbers count up from 0
+ *  stories  → each card reveals independently (stagger 120ms)
+ *  quotes   → infinite ticker, pauses on hover, draggable
+ *  jobs     → each entry reveals per-scroll
+ *  stack    → rows stagger in
+ *  education → simple fade
+ * ───────────────────────────────────────────────────────── */
 
-const REVEAL: Variants = {
-  hidden: { opacity: 0.12, y: 10, filter: 'blur(10px)' },
-  show: {
-    opacity: 1, y: 0, filter: 'blur(0px)',
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+/* ─── Hero timing (ms after mount) ────────────────────────────────── */
+
+const HERO_TIMING = {
+  role:     100,   // role label fades in
+  name:     250,   // name springs in
+  subtitle: 500,   // subtitle reveals
+  links:    800,   // contact links stagger
+}
+
+/* ─── Element configs ─────────────────────────────────────────────── */
+
+const HERO_ROLE = {
+  offsetY: 6,
+  spring: { type: 'spring' as const, visualDuration: 0.4, bounce: 0 },
+}
+
+const HERO_NAME = {
+  offsetY: 12,
+  spring: { type: 'spring' as const, visualDuration: 0.55, bounce: 0.05 },
+}
+
+const HERO_SUB = {
+  offsetY: 8,
+  spring: { type: 'spring' as const, visualDuration: 0.45, bounce: 0 },
+}
+
+const HERO_LINKS = {
+  stagger: 0.08,   // seconds between each link
+  offsetY: 6,
+  spring: { type: 'spring' as const, visualDuration: 0.4, bounce: 0 },
+  items: [
+    { label: 'Toronto, ON', href: null },
+    { label: 'info@janemolodetskaya.com', href: 'mailto:info@janemolodetskaya.com' },
+    { label: 'LinkedIn', href: 'https://linkedin.com/in/jane-molodetskaya-799bb757' },
+    { label: 'GitHub',   href: 'https://github.com/march213' },
+  ] as { label: string; href: string | null }[],
+}
+
+/* Scroll-section shared spring */
+const SECTION_SPRING = { type: 'spring' as const, visualDuration: 0.5, bounce: 0 }
+
+/* Metric cards */
+const METRIC_CARD = {
+  stagger: 0.1,
+  offsetY: 10,
+  spring: SECTION_SPRING,
+  numberTransition: {
+    y:       { type: 'spring' as const, visualDuration: 0.5, bounce: 0.15 },
+    layout:  { duration: 0.4 },
+    opacity: { ease: 'linear' as const },
   },
 }
 
-const STAGGER = (delay = 0): Variants => ({
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1, delayChildren: delay } },
-})
+/* Story cards */
+const STORY_CARD = {
+  stagger: 0.12,
+  offsetY: 14,
+  spring: SECTION_SPRING,
+}
 
-const VP = { once: true, margin: '-60px 0px' }
+/* Testimonial ticker */
+const QUOTE_TICKER = {
+  velocity: 30,        // px/s — gentle rightward scroll
+  hoverFactor: 0,      // pause completely on hover
+  gap: 20,             // px between cards
+  fade: 80,            // px fade on each edge
+  cardWidth: 360,      // px — fixed card width
+  spring: SECTION_SPRING,
+}
 
-/* ─── Component ───────────────────────────────────────────────────────── */
+/* Job entries */
+const JOB_ENTRY = {
+  offsetY: 10,
+  childStagger: 0.08,
+  spring: SECTION_SPRING,
+}
+
+/* Stack rows */
+const STACK_ROW = {
+  stagger: 0.06,
+  offsetY: 8,
+  spring: SECTION_SPRING,
+}
+
+/* Viewport detection config */
+const VP = { once: true, margin: '-60px 0px' as const }
+
+/* ─── Component ───────────────────────────────────────────────────── */
 
 export default function WebContent() {
-  return (
-    <div className="print:hidden">
+  /* Hero stage */
+  const heroRef = useRef<HTMLElement>(null)
+  const heroInView = useInView(heroRef, { once: true })
+  const [stage, setStage] = useState(0)
 
-      {/* Bottom blur vignette — always visible, blurs content scrolling underneath */}
+  useEffect(() => {
+    if (!heroInView) { setStage(0); return }
+
+    setStage(0)
+    const t: NodeJS.Timeout[] = []
+    t.push(setTimeout(() => setStage(1), HERO_TIMING.role))
+    t.push(setTimeout(() => setStage(2), HERO_TIMING.name))
+    t.push(setTimeout(() => setStage(3), HERO_TIMING.subtitle))
+    t.push(setTimeout(() => setStage(4), HERO_TIMING.links))
+    return () => t.forEach(clearTimeout)
+  }, [heroInView])
+
+  return (
+    <article className="print:hidden">
+      {/* Bottom blur vignette */}
       <div
+        aria-hidden="true"
         className="fixed bottom-0 left-0 right-0 h-36 pointer-events-none z-20 backdrop-blur-md print:hidden"
         style={{
           maskImage: 'linear-gradient(to bottom, transparent, black)',
@@ -36,144 +145,124 @@ export default function WebContent() {
         }}
       />
 
-      <a
-        href="/"
-        className="fixed top-7 left-7 z-50 font-mono text-xs tracking-[0.14em] uppercase text-white/40 hover:text-white/70 transition-colors duration-200"
-      >
-        ← Home
-      </a>
+      <nav aria-label="Page navigation" className="fixed top-7 left-7 z-50">
+        <a
+          href="/"
+          className="font-mono text-xs tracking-[0.14em] uppercase text-white/40 hover:text-white/70 transition-colors duration-200"
+        >
+          ← Home
+        </a>
+      </nav>
       <ExportButton />
 
-      {/* Hero */}
-      <section className="relative h-[88vh] flex flex-col justify-center px-8 sm:px-16 py-20 max-w-5xl mx-auto">
-        <motion.div initial="hidden" animate="show" variants={STAGGER(0.05)} className="mb-10">
-          <motion.p variants={REVEAL} className="font-mono text-[clamp(11px,1.1vw,13px)] tracking-[0.2em] uppercase text-white/55 mb-5">
+      {/* ═══════════════════════ HERO ═══════════════════════ */}
+      <header ref={heroRef} className="relative h-[88vh] flex flex-col justify-center px-8 sm:px-16 py-20 max-w-5xl mx-auto">
+        <div className="mb-10">
+          {/* Role */}
+          <motion.p
+            initial={{ opacity: 0, y: HERO_ROLE.offsetY }}
+            animate={{ opacity: stage >= 1 ? 1 : 0, y: stage >= 1 ? 0 : HERO_ROLE.offsetY }}
+            transition={HERO_ROLE.spring}
+            className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-5"
+          >
             Senior Software Engineer
           </motion.p>
+
+          {/* Name */}
           <motion.h1
-            variants={REVEAL}
+            initial={{ opacity: 0, y: HERO_NAME.offsetY }}
+            animate={{ opacity: stage >= 2 ? 1 : 0, y: stage >= 2 ? 0 : HERO_NAME.offsetY }}
+            transition={HERO_NAME.spring}
             className="font-light text-[clamp(36px,9vw,96px)] leading-[0.95] tracking-[-0.02em] text-white mb-7"
           >
             Jane<br />Molodetskaya
           </motion.h1>
-          <motion.p variants={REVEAL} className="font-body font-normal text-white/85 text-[clamp(16px,1.6vw,20px)] max-w-[520px] leading-[1.72]">
-            Product and design engineer, 8 years in.
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: HERO_SUB.offsetY }}
+            animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : HERO_SUB.offsetY }}
+            transition={HERO_SUB.spring}
+            className="font-body font-normal text-white/85 text-lg max-w-[520px] leading-[1.72]"
+          >
+            Product engineer, 8 years in.
             Thinking in flows, shipping with craft, always close to the user.
           </motion.p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial="hidden" animate="show" variants={STAGGER(0.5)}
-          className="flex flex-wrap gap-x-7 gap-y-2 font-mono text-[clamp(11px,1.1vw,13px)] text-white/55"
-        >
-          {[
-            { label: 'Toronto, ON', href: null },
-            { label: 'info@janemolodetskaya.com', href: 'mailto:info@janemolodetskaya.com' },
-            { label: 'LinkedIn', href: 'https://linkedin.com/in/jane-molodetskaya-799bb757' },
-            { label: 'GitHub',   href: 'https://github.com/march213' },
-          ].map(({ label, href }) => (
-            <motion.span key={label} variants={REVEAL}>
+        {/* Contact links */}
+        <address className="not-italic flex flex-wrap gap-x-7 gap-y-2 font-mono text-xs text-white/55">
+          {HERO_LINKS.items.map(({ label, href }, i) => (
+            <motion.span
+              key={label}
+              initial={{ opacity: 0, y: HERO_LINKS.offsetY }}
+              animate={{ opacity: stage >= 4 ? 1 : 0, y: stage >= 4 ? 0 : HERO_LINKS.offsetY }}
+              transition={{ ...HERO_LINKS.spring, delay: i * HERO_LINKS.stagger }}
+            >
               {href
                 ? <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="hover:text-white/90 transition-colors duration-200">{label}</a>
                 : label
               }
             </motion.span>
           ))}
-        </motion.div>
+        </address>
+      </header>
 
-      </section>
+      {/* ═══════════════════ SCROLLABLE CONTENT ═══════════════════ */}
+      <div className="relative z-10 max-w-[720px] mx-auto px-8 sm:px-16">
 
-      {/* Scrollable content */}
-      <div className="relative z-10 max-w-[720px] mx-auto px-8 sm:px-16 pb-40">
-
-        {/* ── About ───────────────────────────────────────────── */}
-        <Reveal className="mb-16 pt-4">
-          <Label>About</Label>
-          <p className="font-display font-light text-[clamp(19px,2.2vw,26px)] text-white/85 leading-[1.7]">
-            8 years building at the intersection of product and design.
-            I think in flows, prototype to test ideas, and ship with craft.
-            The engineering is the means; the <span className="font-normal text-white">user experience</span> is the point.
-          </p>
-        </Reveal>
-
-        <Divider />
-
-        {/* ── Impact ──────────────────────────────────────────── */}
-        <section className="mb-20">
-          <Reveal><Label>Impact</Label></Reveal>
-          <motion.div
-            initial="hidden" whileInView="show" viewport={VP} variants={STAGGER()}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-10"
-          >
-            {METRICS.map(m => (
-              <motion.div key={m.value} variants={REVEAL}>
-                <p className="font-display font-light text-[clamp(38px,5vw,60px)] text-white leading-none mb-2">{m.value}</p>
-                <p className="font-mono text-[clamp(11px,1.1vw,13px)] text-white/65 leading-snug">{m.label}</p>
-                <p className="font-mono text-[clamp(10px,1vw,11px)] text-white/40 leading-snug mt-0.5">{m.sub}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+        {/* ── About ─────────────────────────────────────── */}
+        <section aria-labelledby="about-heading" className="mb-16 pt-4">
+          <Reveal>
+            <h2 id="about-heading" className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-6">About</h2>
+            <p className="font-display font-light text-xl sm:text-2xl text-white/85 leading-[1.7]">
+              I build at the intersection of product and engineering.
+              Coffee first, then prototypes. I test ideas fast, iterate on what works,
+              and care about the <em className="font-normal text-white not-italic">user experience</em> more than the code that powers it.
+              The engineering is the means; the outcome is the point.
+            </p>
+          </Reveal>
         </section>
 
         <Divider />
 
-        {/* ── Experience ──────────────────────────────────────── */}
-        <section className="mb-20">
-          <Reveal><Label>Work</Label></Reveal>
+        {/* ── Impact (AnimateNumber) ────────────────────── */}
+        <section aria-labelledby="impact-heading" className="mb-20">
+          <Reveal><h2 id="impact-heading" className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-6">Impact</h2></Reveal>
+          <MetricGrid />
+        </section>
 
-          <Job company="Dapper Labs" role="Senior Software Engineer · Remote / Toronto" dates="May 2022 – Present"
-            tags={['TypeScript','React','Next.js','React Native (Expo)','GraphQL','XState','TailwindCSS','TanStack Query']}>
-            <p>
-              Built features across Dapper's IP products (NBA, NFL, Disney): marketplaces, onboarding, marketing pages, challenges, leaderboards.
-              The biggest one was the marketplace revamp: started from a blank slate on the UX,
-              saw it through to shipping, and kept iterating after.
-            </p>
-            <p>
-              The FTUE rebuild: took conversion from <Hi>~0.4% to 1.6%</Hi> by stripping
-              friction at every step, measuring, and iterating until it clicked. Same
-              approach across other features too: challenges, home feed.
-            </p>
-            <p>
-              One of the founding engineers on the shared platform that powers all Dapper
-              products: common infrastructure, unified codebase, theme support across brands.
-            </p>
-          </Job>
+        <Divider />
 
-          <Job company="Lazer Technologies" role="Senior Software Engineer · Toronto" dates="Jul 2021 – May 2022">
-            <p>
-              React and React Native product engineering with high UX quality and
-              tight product/design collaboration. Fast iteration, clean code, real outcomes.
-            </p>
-          </Job>
+        {/* ── What I've shipped (stories) ───────────────── */}
+        <section aria-labelledby="shipped-heading" className="mb-20">
+          <Reveal><h2 id="shipped-heading" className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-6">What I&apos;ve shipped</h2></Reveal>
+          <StoryCards />
+        </section>
 
-          <Job company="Bunch" role="Full Stack Engineer" dates="Oct 2019 – Sep 2021"
-            tags={['React Native','Redux Sagas','TypeScript','Jest/RTL','Firebase','Agora','Stream Chat']}>
-            <p>
-              Led chat, feed, and video reaction features contributing to a <Hi>17% DAU increase</Hi>.
-              Cut app loading from <Hi>7s to 3s</Hi> through profiling and optimization.
-              Shipped the Snapchat OAuth integration. Mentored teammates, ran user interviews.
-            </p>
-          </Job>
+        <Divider />
 
-          <Job company="Axept Global" role="Intermediate Frontend Engineer · Toronto" dates="Dec 2017 – Oct 2019"
-            tags={['React','React Native','Redux','CSS-in-JS','Firebase','Node.js']}>
-            <p>
-              Led a 3-person team: travel insurance comparison tool in <Hi>6 months</Hi>,
-              then a similar platform in <Hi>4</Hi>. Built the reusable boilerplate that
-              made the second one faster.
-            </p>
-          </Job>
+        {/* ── What people say (testimonials) ─────────────── */}
+        <section aria-labelledby="testimonials-heading">
+          <Reveal><h2 id="testimonials-heading" className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-6">From the team</h2></Reveal>
+        </section>
+      </div>
 
-          <Job company="Rocketbank" role="Frontend Engineer · Moscow" dates="Apr 2017 – Dec 2017"
-            tags={['React','Flow','PostCSS','Redux','Jest']}>
-            <p>
-              Registration flow rebuild: <Hi>20% faster</Hi> time-to-apply,{' '}
-              <Hi>15% conversion increase</Hi>. Close collaboration with design and backend.
-            </p>
-          </Job>
+      {/* Ticker breaks out of the content column for full-bleed effect */}
+      <div className="relative z-10 -mt-2">
+        <QuoteTicker />
+      </div>
 
+      <div className="relative z-10 max-w-[720px] mx-auto px-8 sm:px-16 pb-20 pt-14">
+
+        {/* ── Experience ─────────────────────────────────── */}
+        <section aria-labelledby="work-heading" className="mb-20">
+          <Reveal><h2 id="work-heading" className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-6">Work</h2></Reveal>
+          {JOBS.map((job) => (
+            <JobEntry key={job.company} job={job} />
+          ))}
           <Reveal>
-            <p className="font-mono text-[clamp(10px,1vw,11px)] text-white/25 leading-relaxed">
+            <p className="font-mono text-xs text-white/45 leading-relaxed">
               Earlier: Axept Global, Frontend Engineer (Dec 2016 – Apr 2017)<br />
               Digital Team, Junior Frontend Engineer (Jan 2016 – Dec 2016)
             </p>
@@ -182,101 +271,286 @@ export default function WebContent() {
 
         <Divider />
 
-        {/* ── Stack ───────────────────────────────────────────── */}
-        <section className="mb-20">
-          <Reveal><Label>Stack</Label></Reveal>
-          <motion.div
-            initial="hidden" whileInView="show" viewport={VP} variants={STAGGER()}
-            className="flex flex-col gap-[18px]"
-          >
-            {STACK.map(([cat, val]) => (
-              <motion.div key={cat} variants={REVEAL} className="grid grid-cols-[120px_1fr] gap-4 items-baseline">
-                <span className="font-mono text-[clamp(10px,1vw,11px)] text-white/50">{cat}</span>
-                <span className="font-body font-normal text-[clamp(13px,1.3vw,15px)] text-white/85 leading-snug">{val}</span>
-              </motion.div>
-            ))}
-          </motion.div>
+        {/* ── Stack ──────────────────────────────────────── */}
+        <section aria-labelledby="stack-heading" className="mb-20">
+          <Reveal><h2 id="stack-heading" className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-6">Stack</h2></Reveal>
+          <StackList />
         </section>
 
         <Divider />
 
-        {/* ── Education ───────────────────────────────────────── */}
-        <Reveal className="mb-4">
-          <Label>Education</Label>
-          <p className="font-display font-light text-[clamp(17px,2vw,22px)] text-white/90 mb-1.5">
-            Moscow Power Engineering Institute
-          </p>
-          <p className="font-mono text-[clamp(11px,1.1vw,13px)] text-white/40">Computer Programming · 2007–2010</p>
-        </Reveal>
+        {/* ── Education ──────────────────────────────────── */}
+        <section aria-labelledby="education-heading">
+          <Reveal className="mb-4">
+            <h2 id="education-heading" className="font-mono text-xs tracking-[0.2em] uppercase text-white/55 mb-6">Education</h2>
+            <p className="font-display font-light text-xl text-white/90 mb-1.5">
+              Moscow Power Engineering Institute
+            </p>
+            <p className="font-mono text-xs text-white/40">Computer Programming · 2007–2010</p>
+          </Reveal>
+        </section>
 
-        <Reveal>
-          <p className="font-mono text-[clamp(10px,1vw,11px)] text-white/20 tracking-[0.12em] mt-20">
-            info@janemolodetskaya.com · toronto, on
-          </p>
-        </Reveal>
+        <footer className="mt-20">
+          <Reveal>
+            <address className="not-italic font-mono text-xs text-white/20 tracking-[0.12em]">
+              info@janemolodetskaya.com · toronto, on
+            </address>
+          </Reveal>
+        </footer>
       </div>
+    </article>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  SECTION COMPONENTS
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Metrics with AnimateNumber count-up ─────────────────────────── */
+
+function MetricGrid() {
+  const ref = useRef<HTMLDListElement>(null)
+  const isInView = useInView(ref, VP)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (isInView) setVisible(true)
+  }, [isInView])
+
+  return (
+    <dl ref={ref} className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-10">
+      {METRICS.map((m, i) => (
+        <motion.div
+          key={m.label}
+          initial={{ opacity: 0, y: METRIC_CARD.offsetY }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ ...METRIC_CARD.spring, delay: i * METRIC_CARD.stagger }}
+        >
+          <dd className="font-display font-light text-[clamp(38px,5vw,60px)] text-white leading-none mb-2">
+            {m.prefix}
+            <AnimateNumber transition={METRIC_CARD.numberTransition}>
+              {visible ? m.num : 0}
+            </AnimateNumber>
+            <span className="text-[0.55em] text-white/70">{m.suffix}</span>
+          </dd>
+          <dt className="font-mono text-xs text-white/65 leading-snug">{m.label}</dt>
+          <dd className="font-mono text-xs text-white/40 leading-snug mt-0.5">{m.sub}</dd>
+        </motion.div>
+      ))}
+    </dl>
+  )
+}
+
+/* ── Story cards ──────────────────────────────────────────────────── */
+
+function StoryCards() {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, VP)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (isInView) setVisible(true)
+  }, [isInView])
+
+  return (
+    <div ref={ref} className="flex flex-col gap-8">
+      {STORIES.map((s, i) => (
+        <motion.article
+          key={s.title}
+          initial={{ opacity: 0, y: STORY_CARD.offsetY }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ ...STORY_CARD.spring, delay: i * STORY_CARD.stagger }}
+          className="border-l border-white/[0.12] pl-6"
+        >
+          <h3 className="font-display font-normal text-lg text-white mb-2">
+            {s.title}
+          </h3>
+          <p className="font-body font-normal text-base text-white/70 leading-[1.8]">
+            {s.body}
+          </p>
+        </motion.article>
+      ))}
     </div>
   )
 }
 
-/* ─── Helpers ─────────────────────────────────────────────────────────── */
+/* ── Testimonial ticker (infinite, draggable, pauses on hover) ──── */
 
-function Label({ children }: { children: React.ReactNode }) {
+function QuoteTicker() {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, VP)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (isInView) setVisible(true)
+  }, [isInView])
+
   return (
-    <p className="font-mono text-[clamp(11px,1.1vw,13px)] tracking-[0.2em] uppercase text-white/55 mb-6">
-      {children}
-    </p>
-  )
-}
-
-function Divider() {
-  return (
-    <motion.hr
-      initial="hidden" whileInView="show" viewport={VP} variants={REVEAL}
-      className="border-none h-px bg-gradient-to-r from-white/[0.1] to-transparent my-14"
-    />
-  )
-}
-
-function Hi({ children }: { children: React.ReactNode }) {
-  return <strong className="font-semibold text-white/95">{children}</strong>
-}
-
-function Reveal({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <motion.div initial="hidden" whileInView="show" viewport={VP} variants={REVEAL} className={className}>
-      {children}
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0 }}
+      animate={visible ? { opacity: 1 } : {}}
+      transition={QUOTE_TICKER.spring}
+    >
+      <Ticker
+        velocity={QUOTE_TICKER.velocity}
+        hoverFactor={QUOTE_TICKER.hoverFactor}
+        gap={QUOTE_TICKER.gap}
+        fade={QUOTE_TICKER.fade}
+        loop
+        drag="x"
+        align="stretch"
+        className="[&_li]:!h-auto [&_li]:!self-stretch"
+        style={{ cursor: 'grab' }}
+        items={TESTIMONIALS.map((t, i) => (
+          <blockquote
+            key={i}
+            className="flex flex-col justify-between rounded-lg bg-white/10 border border-white/[0.08] px-6 py-5 select-none"
+            style={{ width: QUOTE_TICKER.cardWidth, height: '100%' }}
+          >
+            <p className="font-body font-light italic text-base text-white/80 leading-[1.75] mb-4">
+              &ldquo;{t.quote}&rdquo;
+            </p>
+            <footer className="font-mono text-xs mt-auto pt-3 border-t border-white/[0.06]">
+              <cite className="not-italic text-white/40">{t.role}</cite>
+            </footer>
+          </blockquote>
+        ))}
+      />
     </motion.div>
   )
 }
 
-function Job({ company, role, dates, tags, children }: {
-  company: string; role: string; dates: string; tags?: string[]; children: React.ReactNode
-}) {
+/* ── Job entry ────────────────────────────────────────────────────── */
+
+function JobEntry({ job }: { job: typeof JOBS[number] }) {
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, VP)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (isInView) setVisible(true)
+  }, [isInView])
+
   return (
-    <motion.div
-      initial="hidden" whileInView="show" viewport={VP} variants={STAGGER()}
+    <article
+      ref={ref}
       className="pb-10 mb-10 border-b border-white/[0.07] last:border-none last:mb-0 last:pb-0"
     >
-      <motion.div variants={REVEAL} className="flex justify-between items-baseline flex-wrap gap-x-4 gap-y-1 mb-1.5">
-        <h2 className="font-display font-light text-[clamp(20px,2.2vw,26px)] text-white tracking-tight">{company}</h2>
-        <span className="font-mono text-[clamp(10px,1vw,11px)] text-white/30">{dates}</span>
+      {/* Header row */}
+      <motion.div
+        initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+        animate={visible ? { opacity: 1, y: 0 } : {}}
+        transition={JOB_ENTRY.spring}
+        className="flex justify-between items-baseline flex-wrap gap-x-4 gap-y-1 mb-1.5"
+      >
+        <h3 className="font-display font-light text-2xl text-white tracking-tight">{job.company}</h3>
+        <time className="font-mono text-xs text-white/30">{job.dates}</time>
       </motion.div>
-      <motion.p variants={REVEAL} className="font-mono text-[clamp(11px,1.1vw,12px)] tracking-[0.08em] uppercase text-white/50 mb-5">
-        {role}
+
+      {/* Role */}
+      <motion.p
+        initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+        animate={visible ? { opacity: 1, y: 0 } : {}}
+        transition={{ ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger }}
+        className="font-mono text-xs tracking-[0.08em] uppercase text-white/50 mb-5"
+      >
+        {job.role}
       </motion.p>
-      <motion.div variants={REVEAL} className="flex flex-col gap-3 font-body font-normal text-[clamp(14px,1.4vw,16px)] text-white/85 leading-[1.8]">
-        {children}
-      </motion.div>
-      {tags && (
-        <motion.div variants={REVEAL} className="flex flex-wrap gap-1.5 mt-5">
-          {tags.map(t => (
-            <span key={t} className="font-mono text-[clamp(10px,1vw,11px)] text-white/40 bg-white/[0.06] px-2 py-1 rounded-sm">
+
+      {/* Bullets */}
+      <ul className="flex flex-col gap-3 font-body font-normal text-base text-white/85 leading-[1.8] list-none">
+        {job.bullets.map((b, i) => (
+          <motion.li
+            key={i}
+            initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+            animate={visible ? { opacity: 1, y: 0 } : {}}
+            transition={{ ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger * (i + 2) }}
+          >
+            {b}
+          </motion.li>
+        ))}
+      </ul>
+
+      {/* Tags */}
+      {job.tags && (
+        <motion.ul
+          aria-label={`Technologies at ${job.company}`}
+          initial={{ opacity: 0, y: JOB_ENTRY.offsetY }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ ...JOB_ENTRY.spring, delay: JOB_ENTRY.childStagger * (job.bullets.length + 2) }}
+          className="flex flex-wrap gap-1.5 mt-5 list-none"
+        >
+          {job.tags.map(t => (
+            <li key={t} className="font-mono text-xs text-white/40 bg-white/[0.06] px-2 py-1 rounded-sm">
               {t}
-            </span>
+            </li>
           ))}
-        </motion.div>
+        </motion.ul>
       )}
+    </article>
+  )
+}
+
+/* ── Stack list ───────────────────────────────────────────────────── */
+
+function StackList() {
+  const ref = useRef<HTMLDListElement>(null)
+  const isInView = useInView(ref, VP)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (isInView) setVisible(true)
+  }, [isInView])
+
+  return (
+    <dl ref={ref} className="flex flex-col gap-[18px]">
+      {STACK.map(([cat, val], i) => (
+        <motion.div
+          key={cat}
+          initial={{ opacity: 0, y: STACK_ROW.offsetY }}
+          animate={visible ? { opacity: 1, y: 0 } : {}}
+          transition={{ ...STACK_ROW.spring, delay: i * STACK_ROW.stagger }}
+          className="grid grid-cols-[120px_1fr] gap-4 items-baseline"
+        >
+          <dt className="font-mono text-xs text-white/50">{cat}</dt>
+          <dd className="font-body font-normal text-sm text-white/85 leading-snug">{val}</dd>
+        </motion.div>
+      ))}
+    </dl>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  SHARED HELPERS
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+function Divider() {
+  return (
+    <Reveal>
+      <hr className="border-none h-px bg-gradient-to-r from-white/[0.1] to-transparent my-14" />
+    </Reveal>
+  )
+}
+
+function Reveal({ children, className }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, VP)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (isInView) setVisible(true)
+  }, [isInView])
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 10 }}
+      animate={visible ? { opacity: 1, y: 0 } : {}}
+      transition={SECTION_SPRING}
+      className={className}
+    >
+      {children}
     </motion.div>
   )
 }
