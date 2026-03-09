@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect, createContext, useContext } from 'react'
+import Link from 'next/link'
 import { motion, useInView } from 'motion/react'
 import { AnimateNumber, Ticker } from 'motion-plus/react'
 import ExportButton from './ExportButton'
@@ -166,12 +167,12 @@ export default function WebContent() {
       />
 
       <nav aria-label="Page navigation" className="fixed top-4 left-4 sm:top-7 sm:left-7 z-50">
-        <a
+        <Link
           href="/"
           className="min-h-11 min-w-11 inline-flex items-center justify-center px-3 rounded-sm font-mono text-xs tracking-[0.14em] uppercase text-white/55 hover:text-white/80 transition-colors duration-200"
         >
           ← Home
-        </a>
+        </Link>
       </nav>
       <ExportButton />
 
