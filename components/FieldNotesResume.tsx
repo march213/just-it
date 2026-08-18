@@ -1,4 +1,4 @@
-import { IMPACT_AREAS, JOBS, METRICS, STACK, STORIES, TESTIMONIALS } from '@/lib/data'
+import { EVIDENCE, IMPACT_AREAS, JOBS, STACK, STORIES, TESTIMONIALS } from '@/lib/data'
 
 const PROFILE = {
   location: 'Toronto, Canada',
@@ -43,17 +43,17 @@ export default function FieldNotesResume() {
       <div className="mx-auto max-w-6xl px-5 pb-20 pt-10 sm:px-8 sm:pb-28 sm:pt-14">
         <section aria-labelledby="impact-title" className="border-t border-[var(--fn-border)]">
           <div className="grid border-x border-b border-[var(--fn-border)] lg:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.7fr)]">
-            <SectionIntro index="01" label="Evidence" title="Impact in numbers" id="impact-title">
-              Measured outcomes and delivery at scale—the proof before the chronology.
+            <SectionIntro index="01" label="Impact" title="How I create impact" id="impact-title">
+              Ownership, product and business outcomes, systemic improvement, and speed when it matters.
             </SectionIntro>
 
             <dl className="grid border-t border-[var(--fn-border)] sm:grid-cols-2 lg:border-l lg:border-t-0">
-              {METRICS.map((metric, index) => (
-                <div key={metric.label} className="min-h-44 border-b border-[var(--fn-border-faint)] p-5 sm:odd:border-r sm:p-6">
-                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--fn-blue)]">Metric {String(index + 1).padStart(2, '0')}</p>
-                  <dd className="mt-6 font-mono text-4xl leading-none tracking-[-0.04em] tabular-nums">{metric.prefix}{metric.num}{metric.suffix}</dd>
-                  <dt className="mt-4 text-base font-semibold">{metric.label}</dt>
-                  <dd className="mt-1 font-mono text-xs leading-relaxed text-[var(--fn-muted)]">{metric.sub}</dd>
+              {EVIDENCE.map((evidence, index) => (
+                <div key={evidence.label} className="min-h-44 border-b border-[var(--fn-border-faint)] p-5 sm:odd:border-r sm:p-6">
+                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--fn-blue)]">Evidence {String(index + 1).padStart(2, '0')}</p>
+                  <dd className="mt-6 font-mono text-4xl leading-none tracking-[-0.04em] tabular-nums">{evidence.value}</dd>
+                  <dt className="mt-4 text-base font-semibold">{evidence.label}</dt>
+                  <dd className="mt-1 max-w-[48ch] text-sm leading-relaxed text-[var(--fn-muted)] text-pretty">{evidence.sub}</dd>
                 </div>
               ))}
             </dl>

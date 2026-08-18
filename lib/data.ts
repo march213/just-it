@@ -1,22 +1,18 @@
-/* ─── Metric cards (AnimateNumber-friendly) ────────────────────────── */
+/* ─── Evidence of impact ───────────────────────────────────────────── */
 
-export type Metric = {
-  /** Numeric part for AnimateNumber (e.g. 1.6) */
-  num: number
-  /** Display suffix/prefix (e.g. '%', 's') */
-  suffix: string
-  prefix?: string
+export type Evidence = {
+  value: string
   label: string
   sub: string
 }
 
-export const METRICS: Metric[] = [
-  { num: 657, suffix: '', label: 'Merged PRs', sub: '13 weeks · 4 repositories · 4,231 files' },
-  { num: 34, suffix: '', label: 'Backend PRs', sub: 'Dapper Labs · Go, SQL, protobuf contracts' },
-  { num: 15, suffix: '+', label: 'Funnels & insights', sub: 'Dapper Labs Mixpanel reads used by the organization' },
-  { num: 4, suffix: '×', label: 'FTUE conversion', sub: 'Dapper Labs · ~0.4% → 1.6%' },
-  { num: 17, suffix: '%', label: 'DAU increase', sub: 'Bunch · chat, feed, video reactions' },
-  { num: 5, suffix: 'd', label: 'Content migration', sub: 'Four products · frontend to infrastructure' },
+export const EVIDENCE: Evidence[] = [
+  { value: 'DRI', label: 'Economic Confidence', sub: 'Named frontend engineering driver for a CEO-authored company objective with a real revenue target' },
+  { value: '0→1', label: 'Marketplace ownership', sub: 'Took NFL ALL DAY’s marketplace from concept to launch and owned Collection Groups end to end' },
+  { value: '4×', label: 'Activation', sub: 'Improved first-time-user conversion from roughly 0.4% to 1.6% at Dapper Labs' },
+  { value: '17%', label: 'Engagement', sub: 'DAU increase from chat, feed, and video reaction work at Bunch' },
+  { value: '7→3s', label: 'Performance', sub: 'Cut app startup time by more than half through profiling and targeted improvements' },
+  { value: '5 days', label: 'Cross-stack migration', sub: 'Led a high-risk content migration from frontend queries through backend, infrastructure, and production recovery' },
 ]
 
 /* ─── Highlight stories ────────────────────────────────────────────── */
@@ -41,7 +37,7 @@ export const STORIES: Story[] = [
   },
   {
     title: 'One capability model, ten card surfaces',
-    body: 'Collapsed fragmented CollectibleCard variants onto one typed capability-preset model across web and React Native. The work spanned 77 PRs—and stopped before becoming a generic render engine that would have been harder to understand than the code it replaced.',
+    body: 'Collapsed fragmented CollectibleCard variants onto one typed capability-preset model across web and React Native. Reduced repeated decisions to one clear capability table—and stopped before building a generic render engine that would have been harder to understand than the code it replaced.',
   },
 ]
 
