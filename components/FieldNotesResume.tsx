@@ -22,7 +22,7 @@ export default function FieldNotesResume() {
               Jane<br />Molodetskaya
             </h1>
             <p className="mt-8 max-w-[62ch] text-lg leading-[1.65] text-[var(--fn-body)] text-pretty sm:text-xl">
-              Full-stack product engineer and tech lead with 8 years building systems at the intersection of product and design. I see the real problem, fix it at the right layer, and leave the platform better than I found it.
+              Full-stack product engineer and tech lead with 8 years building at the intersection of product and design. I lead core platform capabilities end to end—across product, web, mobile, backend contracts, and production—so every product benefits from the improvement.
             </p>
           </div>
 
@@ -62,8 +62,8 @@ export default function FieldNotesResume() {
 
         <section aria-labelledby="systems-title" className="border-x border-b border-[var(--fn-border)]">
           <div className="grid lg:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.7fr)]">
-            <SectionIntro index="02" label="Systems" title="Selected work" id="systems-title">
-              Capabilities carried across product judgment, interface craft, backend contracts, and operations.
+            <SectionIntro index="02" label="Ownership" title="Core systems I led" id="systems-title">
+              Shared capabilities carried across product judgment, interface craft, backend contracts, and operations.
             </SectionIntro>
 
             <div className="border-t border-[var(--fn-border)] lg:border-l lg:border-t-0">
@@ -82,8 +82,8 @@ export default function FieldNotesResume() {
 
         <section aria-labelledby="scope-title" className="border-x border-b border-[var(--fn-border)]">
           <div className="grid lg:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.7fr)]">
-            <SectionIntro index="03" label="Scope" title="Impact across the platform" id="scope-title">
-              The breadth behind the case studies—product domains, platform layers, and organizational leverage.
+            <SectionIntro index="03" label="Scope" title="Reach across every product" id="scope-title">
+              How core platform ownership translated across product domains, platform layers, and brands.
             </SectionIntro>
 
             <div className="grid border-t border-[var(--fn-border)] sm:grid-cols-2 lg:border-l lg:border-t-0">

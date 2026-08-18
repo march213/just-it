@@ -7,8 +7,8 @@ export type Evidence = {
 }
 
 export const EVIDENCE: Evidence[] = [
-  { value: 'DRI', label: 'Economic Confidence', sub: 'Named frontend engineering driver for a CEO-authored company objective with a real revenue target' },
-  { value: '0→1', label: 'Marketplace ownership', sub: 'Took NFL ALL DAY’s marketplace from concept to launch and owned Collection Groups end to end' },
+  { value: 'DRI', label: 'Core platform capabilities', sub: 'Led marketplace, auctions, collecting, identity, gifting, activity, and measurement systems shared across Dapper Labs products' },
+  { value: 'Lead', label: 'Economic Confidence', sub: 'Named frontend engineering driver for a CEO-authored company objective with a real revenue target' },
   { value: '4×', label: 'Activation', sub: 'Improved first-time-user conversion from roughly 0.4% to 1.6% at Dapper Labs' },
   { value: '17%', label: 'Engagement', sub: 'DAU increase from chat, feed, and video reaction work at Bunch' },
   { value: '7→3s', label: 'Performance', sub: 'Cut app startup time by more than half through profiling and targeted improvements' },
@@ -158,8 +158,8 @@ export const JOBS: Job[] = [
     tags: ['TypeScript', 'React', 'Next.js', 'React Native (Expo)', 'GraphQL', 'XState', 'TailwindCSS', 'TanStack Query'],
     bullets: [
       'Joined as a frontend engineer, grew into a full-stack tech lead, and became a founding engineer of Dapper Labs’ unified web and mobile collectibles platform, replacing the legacy NBA Top Shot and NFL ALL DAY frontends.',
-      'Built Trade-In Auctions end to end across React, Expo, Go, and protobuf contracts, including standings, bid safety, spectator flows, and shared verdict logic.',
-      'Owned major marketplace, set-completion, profile, pack, gifting, feed, and measurement capabilities across NBA, NFL, WNBA, LaLiga, and Disney.',
+      'Acted as DRI for core capabilities shared across Dapper Labs products: marketplace, auctions, set completion, profiles, packs, gifting, activity feeds, and measurement across web, mobile, backend services, and contracts.',
+      'Led Trade-In Auctions end to end across React, Expo, Go, and protobuf contracts, including standings, bid safety, spectator flows, and shared verdict logic.',
       'Led cross-layer migrations and production incident response; encoded analytics-with-the-feature into the repository constitution and built the Mixpanel reads used by the organization.',
     ],
   },
