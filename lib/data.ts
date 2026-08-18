@@ -12,8 +12,8 @@ export type Metric = {
 
 export const METRICS: Metric[] = [
   { num: 657, suffix: '', label: 'Merged PRs', sub: '13 weeks · 4 repositories · 4,231 files' },
-  { num: 34, suffix: '', label: 'Backend PRs', sub: 'Atlas API · Go, SQL, protobuf contracts' },
-  { num: 15, suffix: '+', label: 'Funnels & insights', sub: 'Atlas Mixpanel reads used by the organization' },
+  { num: 34, suffix: '', label: 'Backend PRs', sub: 'Dapper Labs · Go, SQL, protobuf contracts' },
+  { num: 15, suffix: '+', label: 'Funnels & insights', sub: 'Dapper Labs Mixpanel reads used by the organization' },
   { num: 4, suffix: '×', label: 'FTUE conversion', sub: 'Dapper Labs · ~0.4% → 1.6%' },
   { num: 17, suffix: '%', label: 'DAU increase', sub: 'Bunch · chat, feed, video reactions' },
   { num: 5, suffix: 'd', label: 'Content migration', sub: 'Four products · frontend to infrastructure' },
@@ -32,7 +32,7 @@ export const STORIES: Story[] = [
     body: 'Built the capability across web, mobile, and backend contracts: spectator board, bid composition, truthful standings, success states, safety gates, and the full Expo port. Moved verdict logic into shared typed data so every platform agrees about who won.',
   },
   {
-    title: 'The Atlas marketplace system',
+    title: 'The Dapper Labs marketplace system',
     body: 'Shipped live listings, live sales, offers, packs, discovery filters, and the unified table experience across brands. Worked at the API boundary when the contract was the real constraint, including pagination semantics, sub-dollar purchases, and idempotent activity.',
   },
   {
@@ -62,7 +62,7 @@ export const IMPACT_AREAS: Story[] = [
   },
   {
     title: 'Measurement as part of the product',
-    body: 'Authored the Atlas Mixpanel dashboards and more than 15 funnels and insights used by the organization. Found Checkout Started undercounting by roughly half, added typed funnel and session context, and amended the repository constitution so analytics ships with the feature rather than arriving as cleanup.',
+    body: 'Authored the Dapper Labs platform Mixpanel dashboards and more than 15 funnels and insights used by the organization. Found Checkout Started undercounting by roughly half, added typed funnel and session context, and amended the repository constitution so analytics ships with the feature rather than arriving as cleanup.',
   },
   {
     title: 'Collector safety and product judgment',
@@ -70,7 +70,7 @@ export const IMPACT_AREAS: Story[] = [
   },
   {
     title: 'Brands, leagues, and platform range',
-    body: 'Carried Atlas across NBA, NFL, WNBA, LaLiga, and Disney: asset roles, themes, badges, metadata, team identifiers, seasonal rewards, active-team boards, pin layouts, navigation, and feature capability differences. Also shipped favorite-team selection and leaderboard parity across web and mobile.',
+    body: 'Carried Dapper Labs’ unified collectibles platform across NBA, NFL, WNBA, LaLiga, and Disney: asset roles, themes, badges, metadata, team identifiers, seasonal rewards, active-team boards, pin layouts, navigation, and feature capability differences. Also shipped favorite-team selection and leaderboard parity across web and mobile.',
   },
   {
     title: 'NFL and NBA foundations',
@@ -78,7 +78,7 @@ export const IMPACT_AREAS: Story[] = [
   },
   {
     title: 'Technical and organizational leadership',
-    body: 'Named frontend engineering driver for the CEO-authored Economic Confidence OKR with a real revenue target and selected by the CEO for a Kaizen / Star of the Month award. Held the NBA-to-Atlas cutover together, led incident response, raised team standards, and became a direct source of truth for frontend decisions.',
+    body: 'Named frontend engineering driver for the CEO-authored Economic Confidence OKR with a real revenue target and selected by the CEO for a Kaizen / Star of the Month award. Held the NBA Top Shot and NFL ALL DAY migration to Dapper Labs’ unified platform together, led incident response, raised team standards, and became a direct source of truth for frontend decisions.',
   },
 ]
 
@@ -161,7 +161,7 @@ export const JOBS: Job[] = [
     dates: 'May 2022 – Present',
     tags: ['TypeScript', 'React', 'Next.js', 'React Native (Expo)', 'GraphQL', 'XState', 'TailwindCSS', 'TanStack Query'],
     bullets: [
-      'Joined as a frontend engineer, grew into a full-stack tech lead, and became a founding engineer of Atlas—the unified web and mobile platform replacing legacy NBA Top Shot and NFL ALL DAY frontends.',
+      'Joined as a frontend engineer, grew into a full-stack tech lead, and became a founding engineer of Dapper Labs’ unified web and mobile collectibles platform, replacing the legacy NBA Top Shot and NFL ALL DAY frontends.',
       'Built Trade-In Auctions end to end across React, Expo, Go, and protobuf contracts, including standings, bid safety, spectator flows, and shared verdict logic.',
       'Owned major marketplace, set-completion, profile, pack, gifting, feed, and measurement capabilities across NBA, NFL, WNBA, LaLiga, and Disney.',
       'Led cross-layer migrations and production incident response; encoded analytics-with-the-feature into the repository constitution and built the Mixpanel reads used by the organization.',
