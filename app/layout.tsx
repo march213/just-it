@@ -1,15 +1,21 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans } from 'next/font/google'
-import DynamicShaderCanvas from '@/components/DynamicShaderCanvas'
+import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google'
+import CssStudio from '@/components/CssStudio'
 import './globals.css'
 
 const SITE_URL = 'https://janemolodetskaya.com'
 
-const jakarta = Plus_Jakarta_Sans({
+const fieldSans = IBM_Plex_Sans({
   subsets: ['latin'],
-  variable: '--font-body',
-  weight: ['300', '400', '500', '700'],
-  style: ['normal', 'italic'],
+  variable: '--font-field-sans',
+  weight: ['400', '500', '600'],
+  display: 'swap',
+})
+
+const fieldMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-field-mono',
+  weight: ['400', '500'],
   display: 'swap',
 })
 
@@ -98,12 +104,12 @@ const jsonLd = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={jakarta.variable}>
+      <body className={`${fieldSans.variable} ${fieldMono.variable}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <DynamicShaderCanvas />
+        <CssStudio />
         {children}
       </body>
     </html>

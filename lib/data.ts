@@ -11,10 +11,10 @@ export type Metric = {
 }
 
 export const METRICS: Metric[] = [
-  { num: 1.6, suffix: '%', label: 'FTUE conversion',  sub: 'Dapper Labs · up from ~0.4%' },
-  { num: 17,  suffix: '%', label: 'DAU increase',     sub: 'Bunch' },
-  { num: 3,   suffix: 's', label: 'App load time',    sub: 'Bunch · down from 7s' },
-  { num: 20,  suffix: '%', label: 'Faster signup',    sub: 'Rocketbank · +15% conversion' },
+  { num: 657, suffix: '', label: 'Merged PRs', sub: 'Atlas quarter · 13 weeks' },
+  { num: 4, suffix: '×', label: 'FTUE conversion', sub: 'Dapper Labs · ~0.4% → 1.6%' },
+  { num: 17, suffix: '%', label: 'DAU increase', sub: 'Bunch · chat, feed, video reactions' },
+  { num: 5, suffix: 'd', label: 'Content migration', sub: 'Four products · frontend to infrastructure' },
 ]
 
 /* ─── Highlight stories ────────────────────────────────────────────── */
@@ -26,16 +26,20 @@ export type Story = {
 
 export const STORIES: Story[] = [
   {
-    title: 'The Marketplace',
-    body: 'Started from a blank slate on the UX for Dapper\u2019s marketplace — the full buy/sell/offer cycle. Architected a purchase state machine, built live listings with real-time polling, and kept iterating post-launch until it felt right.',
+    title: 'Trade-In Auctions, end to end',
+    body: 'Built the capability across web, mobile, and backend contracts: spectator board, bid composition, truthful standings, success states, safety gates, and the full Expo port. Moved verdict logic into shared typed data so every platform agrees about who won.',
   },
   {
-    title: 'The Conversion Problem',
-    body: 'First-time user conversion was stuck at 0.4%. Stripped friction at every step — simplified flows, measured drop-off, iterated fast. Took it to 1.6%, a 4\u00D7 lift that changed how the team thought about onboarding.',
+    title: 'The Atlas marketplace system',
+    body: 'Shipped live listings, live sales, offers, packs, discovery filters, and the unified table experience across brands. Worked at the API boundary when the contract was the real constraint, including pagination semantics, sub-dollar purchases, and idempotent activity.',
   },
   {
     title: 'The Contentful Migration',
-    body: 'Single-handedly migrated the content infrastructure across four products in 5 days. When an unexpected deploy triggered a production issue mid-migration, diagnosed the root cause in real-time, coordinated the fix, and delivered the complete migration on schedule.',
+    body: 'Single-handedly consolidated NBA and NFL content infrastructure across frontend queries, Go structs, Secret Manager, Kubernetes, ArgoCD, and authentication. Diagnosed and recovered a production home-feed outage mid-migration, then delivered on schedule.',
+  },
+  {
+    title: 'One capability model, ten card surfaces',
+    body: 'Collapsed fragmented CollectibleCard variants onto one typed capability-preset model across web and React Native. The work spanned 77 PRs—and stopped before becoming a generic render engine that would have been harder to understand than the code it replaced.',
   },
 ]
 
@@ -74,9 +78,10 @@ export const TESTIMONIALS: Testimonial[] = [
 export const STACK: [string, string][] = [
   ['Web',        'React, Next.js, TypeScript, TailwindCSS, XState, Apollo (GraphQL), TanStack Query, Nuqs'],
   ['Mobile',     'React Native, Expo, performance tuning, micro-interactions, cross-platform UX'],
-  ['Product',    'UX simplification, prototyping \u2192 refinement, A/B testing, instrumentation, funnel thinking'],
+  ['Backend',    'Go, protobuf contracts, GraphQL, Firebase/Firestore, serverless, API integrations'],
+  ['Platform',   'Google Cloud, Secret Manager, Kubernetes, ArgoCD, Contentful'],
+  ['Product',    'UX simplification, prototyping → refinement, Mixpanel, experimentation, funnel thinking'],
   ['Quality',    'Jest, React Testing Library, code reviews, pragmatic test strategy'],
-  ['Backend',    'Firebase/Firestore, serverless, API integrations'],
   ['Leadership', 'Cross-functional collaboration, mentoring, stakeholder alignment, hackathons'],
 ]
 
@@ -97,10 +102,10 @@ export const JOBS: Job[] = [
     dates: 'May 2022 – Present',
     tags: ['TypeScript', 'React', 'Next.js', 'React Native (Expo)', 'GraphQL', 'XState', 'TailwindCSS', 'TanStack Query'],
     bullets: [
-      'Built features across Dapper\u2019s collectibles products (NBA, NFL, Disney): marketplaces, onboarding, marketing pages, challenges, leaderboards.',
-      'Led the marketplace revamp end-to-end — from blank-slate UX to shipping, then kept iterating.',
-      'Rebuilt FTUE onboarding: took conversion from ~0.4% to 1.6% by stripping friction at every step.',
-      'One of the founding engineers on the shared platform powering all Dapper products: common infrastructure, unified codebase, cross-brand theming.',
+      'Joined as a frontend engineer, grew into a full-stack tech lead, and became a founding engineer of Atlas—the unified web and mobile platform replacing legacy NBA Top Shot and NFL ALL DAY frontends.',
+      'Built Trade-In Auctions end to end across React, Expo, Go, and protobuf contracts, including standings, bid safety, spectator flows, and shared verdict logic.',
+      'Owned major marketplace, set-completion, profile, pack, gifting, feed, and measurement capabilities across NBA, NFL, WNBA, LaLiga, and Disney.',
+      'Led cross-layer migrations and production incident response; encoded analytics-with-the-feature into the repository constitution and built the Mixpanel reads used by the organization.',
     ],
   },
   {

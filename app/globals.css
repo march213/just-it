@@ -10,9 +10,9 @@
 }
 
 @theme {
-  --font-display: var(--font-body), sans-serif;
-  --font-body: var(--font-body), sans-serif;
-  --font-mono: var(--font-body), sans-serif;
+  --font-display: var(--font-field-sans), Arial, sans-serif;
+  --font-body: var(--font-field-sans), Arial, sans-serif;
+  --font-mono: var(--font-field-mono), ui-monospace, monospace;
 
   --color-bg: #242424;
   --color-ink: rgba(255, 255, 255, 0.9);
@@ -28,10 +28,30 @@
 
   body {
     min-height: 100dvh;
-    background-color: var(--color-bg);
-    color: var(--color-ink);
-    font-family: var(--font-body), sans-serif;
+    background-color: oklch(0.969 0.008 98.88);
+    color: oklch(0.177 0.002 106.6);
+    font-family: var(--font-field-sans), Arial, sans-serif;
   }
+}
+
+.field-notes-resume {
+  --fn-cream: oklch(0.969 0.008 98.88);
+  --fn-ink: oklch(0.177 0.002 106.6);
+  --fn-body: oklch(0.35 0.009 106.7);
+  --fn-muted: oklch(0.49 0.011 106.81);
+  --fn-blue: oklch(0.474 0.299 264.2);
+  --fn-blue-dim: oklch(0.474 0.299 264.2 / 0.08);
+  --fn-border: oklch(0.177 0.002 106.6 / 0.14);
+  --fn-border-faint: oklch(0.177 0.002 106.6 / 0.09);
+  background: var(--fn-cream);
+  color: var(--fn-ink);
+  font-family: var(--font-field-sans), Arial, sans-serif;
+  font-synthesis: none;
+}
+
+.field-notes-resume ::selection {
+  background: var(--fn-blue-dim);
+  color: var(--fn-ink);
 }
 
 /* Print overrides */

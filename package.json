@@ -3,15 +3,12 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
-    "start": "next start",
-    "postinstall": "bash scripts/install-motion-plus.sh"
+    "start": "next start"
   },
   "dependencies": {
-    "@ombre-ui/react": "^1.7.0",
     "@tailwindcss/postcss": "^4.2.1",
-    "motion": "^12.0.0",
     "next": "^16.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
@@ -21,6 +18,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "babel-plugin-react-compiler": "^1.0.0",
+    "cssstudio": "^1.2.0",
     "postcss": "^8",
     "tailwindcss": "^4.2.1",
     "typescript": "^5"
