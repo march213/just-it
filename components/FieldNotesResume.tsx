@@ -1,4 +1,4 @@
-import { JOBS, METRICS, STACK, STORIES, TESTIMONIALS } from '@/lib/data'
+import { IMPACT_AREAS, JOBS, METRICS, STACK, STORIES, TESTIMONIALS } from '@/lib/data'
 
 const PROFILE = {
   location: 'Toronto, Canada',
@@ -80,9 +80,27 @@ export default function FieldNotesResume() {
           </div>
         </section>
 
+        <section aria-labelledby="scope-title" className="border-x border-b border-[var(--fn-border)]">
+          <div className="grid lg:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.7fr)]">
+            <SectionIntro index="03" label="Scope" title="Impact across the platform" id="scope-title">
+              The breadth behind the case studies—product domains, platform layers, and organizational leverage.
+            </SectionIntro>
+
+            <div className="grid border-t border-[var(--fn-border)] sm:grid-cols-2 lg:border-l lg:border-t-0">
+              {IMPACT_AREAS.map((area, index) => (
+                <article key={area.title} className="border-b border-[var(--fn-border-faint)] p-5 sm:odd:border-r sm:p-6">
+                  <p className="font-mono text-xs text-[var(--fn-blue)] tabular-nums">{String(index + 1).padStart(2, '0')}</p>
+                  <h3 className="mt-5 text-base font-semibold leading-snug text-balance">{area.title}</h3>
+                  <p className="mt-3 max-w-[65ch] text-sm leading-[1.7] text-[var(--fn-body)] text-pretty">{area.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section aria-labelledby="voices-title" className="border-x border-b border-[var(--fn-border)]">
           <div className="grid lg:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.7fr)]">
-            <SectionIntro index="03" label="Voices" title="Recognition index" id="voices-title" tinted>
+            <SectionIntro index="04" label="Voices" title="Recognition index" id="voices-title" tinted>
               What engineering, product, and design leaders said after seeing the work up close.
             </SectionIntro>
 
@@ -106,7 +124,7 @@ export default function FieldNotesResume() {
 
         <section aria-labelledby="experience-title" className="border-x border-b border-[var(--fn-border)]">
           <div className="grid lg:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.7fr)]">
-            <SectionIntro index="04" label="Timeline" title="Experience" id="experience-title" />
+            <SectionIntro index="05" label="Timeline" title="Experience" id="experience-title" />
 
             <div className="border-t border-[var(--fn-border)] lg:border-l lg:border-t-0">
               {JOBS.map((job, index) => (
@@ -130,7 +148,7 @@ export default function FieldNotesResume() {
 
         <section aria-labelledby="capabilities-title" className="border-x border-b border-[var(--fn-border)]">
           <div className="grid lg:grid-cols-[minmax(15rem,0.8fr)_minmax(0,1.7fr)]">
-            <SectionIntro index="05" label="Range" title="Capabilities" id="capabilities-title">
+            <SectionIntro index="06" label="Range" title="Capabilities" id="capabilities-title">
               The stack follows the problem. Product judgment and system ownership are the through-line.
             </SectionIntro>
 
