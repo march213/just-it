@@ -1,20 +1,18 @@
-/* ─── Metric cards (AnimateNumber-friendly) ────────────────────────── */
+/* ─── Evidence of impact ───────────────────────────────────────────── */
 
-export type Metric = {
-  /** Numeric part for AnimateNumber (e.g. 1.6) */
-  num: number
-  /** Display suffix/prefix (e.g. '%', 's') */
-  suffix: string
-  prefix?: string
+export type Evidence = {
+  value: string
   label: string
   sub: string
 }
 
-export const METRICS: Metric[] = [
-  { num: 1.6, suffix: '%', label: 'FTUE conversion',  sub: 'Dapper Labs · up from ~0.4%' },
-  { num: 17,  suffix: '%', label: 'DAU increase',     sub: 'Bunch' },
-  { num: 3,   suffix: 's', label: 'App load time',    sub: 'Bunch · down from 7s' },
-  { num: 20,  suffix: '%', label: 'Faster signup',    sub: 'Rocketbank · +15% conversion' },
+export const EVIDENCE: Evidence[] = [
+  { value: 'DRI', label: 'Core platform capabilities', sub: 'Led marketplace, auctions, collecting, identity, gifting, activity, and measurement systems shared across Dapper Labs products' },
+  { value: 'Lead', label: 'Economic Confidence', sub: 'Named frontend engineering driver for a CEO-authored company objective with a real revenue target' },
+  { value: '4×', label: 'Activation', sub: 'Improved first-time-user conversion from roughly 0.4% to 1.6% at Dapper Labs' },
+  { value: '17%', label: 'Engagement', sub: 'DAU increase from chat, feed, and video reaction work at Bunch' },
+  { value: '7→3s', label: 'Performance', sub: 'Cut app startup time by more than half through profiling and targeted improvements' },
+  { value: '5 days', label: 'Cross-stack migration', sub: 'Led a high-risk content migration from frontend queries through backend, infrastructure, and production recovery' },
 ]
 
 /* ─── Highlight stories ────────────────────────────────────────────── */
@@ -26,16 +24,57 @@ export type Story = {
 
 export const STORIES: Story[] = [
   {
-    title: 'The Marketplace',
-    body: 'Started from a blank slate on the UX for Dapper\u2019s marketplace — the full buy/sell/offer cycle. Architected a purchase state machine, built live listings with real-time polling, and kept iterating post-launch until it felt right.',
+    title: 'Trade-In Auctions, end to end',
+    body: 'Built the capability across web, mobile, and backend contracts: spectator board, bid composition, truthful standings, success states, safety gates, and the full Expo port. Moved verdict logic into shared typed data so every platform agrees about who won.',
   },
   {
-    title: 'The Conversion Problem',
-    body: 'First-time user conversion was stuck at 0.4%. Stripped friction at every step — simplified flows, measured drop-off, iterated fast. Took it to 1.6%, a 4\u00D7 lift that changed how the team thought about onboarding.',
+    title: 'The Dapper Labs marketplace system',
+    body: 'Shipped live listings, live sales, offers, packs, discovery filters, and the unified table experience across brands. Worked at the API boundary when the contract was the real constraint, including pagination semantics, sub-dollar purchases, and idempotent activity.',
   },
   {
-    title: 'The Contentful Migration',
-    body: 'Single-handedly migrated the content infrastructure across four products in 5 days. When an unexpected deploy triggered a production issue mid-migration, diagnosed the root cause in real-time, coordinated the fix, and delivered the complete migration on schedule.',
+    title: 'The Contentful migration',
+    body: 'Single-handedly consolidated NBA and NFL content infrastructure across frontend queries, Go structs, Secret Manager, Kubernetes, ArgoCD, and authentication. Diagnosed and recovered a production home-feed outage mid-migration, then delivered on schedule.',
+  },
+  {
+    title: 'One capability model, ten card surfaces',
+    body: 'Collapsed fragmented CollectibleCard variants onto one typed capability-preset model across web and React Native. Reduced repeated decisions to one clear capability table—and stopped before building a generic render engine that would have been harder to understand than the code it replaced.',
+  },
+]
+
+/* ─── Breadth behind the case studies ─────────────────────────────── */
+
+export const IMPACT_AREAS: Story[] = [
+  {
+    title: 'Sets, completion, and Collect Hub',
+    body: 'Shipped Set Page V2 under the existing route, corrected a doubled 688-row data path to 344 real slots, and made purchase progress revalidate. Built set completion as an isolated, count-based state machine with 11 TDD cases, plus parallels, cost-to-complete, bulk locking, and the Collect Hub consolidation.',
+  },
+  {
+    title: 'Profiles, packs, gifting, and activity',
+    body: 'Built Profile V2 across overview, trophy, wishlist, identity, privacy, and collector discovery surfaces. Delivered the packs marketplace and detail history, unopened-pack gifting, Moment gifting on web and mobile, the global activity feed, collector context, and mobile-parity account activity.',
+  },
+  {
+    title: 'Backend contracts and data integrity',
+    body: 'Changed auction ASC semantics to board order so pagination became correct by construction, then removed the client workaround. Fixed triplicated NFT results, canonicalized transfer addresses, made activity IDs idempotent, exposed auction lot and spectator data, and corrected sub-dollar purchases and fractional-cent listings.',
+  },
+  {
+    title: 'Measurement as part of the product',
+    body: 'Authored the Dapper Labs platform Mixpanel dashboards and more than 15 funnels and insights used by the organization. Found Checkout Started undercounting by roughly half, added typed funnel and session context, and amended the repository constitution so analytics ships with the feature rather than arriving as cleanup.',
+  },
+  {
+    title: 'Collector safety and product judgment',
+    body: 'Added special-serial warnings before irreversible trade-ins, gated every path after a one-tap $334 purchase, hid unsafe multi-lot auctions instead of misrepresenting one prize as the whole lot, and researched eight marketplaces before designing offer guidance. The details protect trust, not just task completion.',
+  },
+  {
+    title: 'Brands, leagues, and platform range',
+    body: 'Carried Dapper Labs’ unified collectibles platform across NBA, NFL, WNBA, LaLiga, and Disney: asset roles, themes, badges, metadata, team identifiers, seasonal rewards, active-team boards, pin layouts, navigation, and feature capability differences. Also shipped favorite-team selection and leaderboard parity across web and mobile.',
+  },
+  {
+    title: 'NFL and NBA foundations',
+    body: 'Helped launch NFL ALL DAY Playbook and the NBA packs marketplace; owned NFL Collection Groups end to end; took NFL marketplace from zero to one; and built team collecting pages that documented VIP feedback said made people want to collect and complete more.',
+  },
+  {
+    title: 'Technical and organizational leadership',
+    body: 'Named frontend engineering driver for the CEO-authored Economic Confidence OKR with a real revenue target and selected by the CEO for a Kaizen / Star of the Month award. Held the NBA Top Shot and NFL ALL DAY migration to Dapper Labs’ unified platform together, led incident response, raised team standards, and became a direct source of truth for frontend decisions.',
   },
 ]
 
@@ -67,6 +106,26 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: 'Jane consistently impresses with her fast and impactful contributions\u2026 proactive problem solving, adaptability, and attention to details make her a highly respected teammate.',
     role: 'Company-wide announcement · Promotion to Senior Engineer, Oct 2023',
   },
+  {
+    quote: 'Our products benefit from Jane simply being a part of the projects. Her impact is seen throughout our code base, and user-facing features.',
+    role: 'Formal company values review · Impact',
+  },
+  {
+    quote: 'Jane has been the epitome of end-to-end ownership and is an amazing example of what a successful startup mentality looks like.',
+    role: 'NFL Collection Groups launch recognition',
+  },
+  {
+    quote: 'Even if that were the case I don\u2019t think you\u2019d be at any risk at all.',
+    role: 'VP Engineering · Direct feedback on invisible work',
+  },
+  {
+    quote: 'I highly recommend we all check out Jane\u2019s real-time prototype. This is the power of social.',
+    role: 'VP Product · Company-wide recommendation',
+  },
+  {
+    quote: 'Jane is the epitome of an owner. She is willing to jump into any fire, any line of work, any ask and critically think about how best to drive the product forward.',
+    role: 'Formal company values review · Ownership',
+  },
 ]
 
 /* ─── Stack ────────────────────────────────────────────────────────── */
@@ -74,9 +133,10 @@ export const TESTIMONIALS: Testimonial[] = [
 export const STACK: [string, string][] = [
   ['Web',        'React, Next.js, TypeScript, TailwindCSS, XState, Apollo (GraphQL), TanStack Query, Nuqs'],
   ['Mobile',     'React Native, Expo, performance tuning, micro-interactions, cross-platform UX'],
-  ['Product',    'UX simplification, prototyping \u2192 refinement, A/B testing, instrumentation, funnel thinking'],
+  ['Backend',    'Go, protobuf contracts, GraphQL, Firebase/Firestore, serverless, API integrations'],
+  ['Platform',   'Google Cloud, Secret Manager, Kubernetes, ArgoCD, Contentful'],
+  ['Product',    'UX simplification, prototyping → refinement, Mixpanel, experimentation, funnel thinking'],
   ['Quality',    'Jest, React Testing Library, code reviews, pragmatic test strategy'],
-  ['Backend',    'Firebase/Firestore, serverless, API integrations'],
   ['Leadership', 'Cross-functional collaboration, mentoring, stakeholder alignment, hackathons'],
 ]
 
@@ -93,14 +153,14 @@ export type Job = {
 export const JOBS: Job[] = [
   {
     company: 'Dapper Labs',
-    role: 'Senior Software Engineer · Remote / Toronto',
+    role: 'Tech Lead · Senior Software Engineer · Remote / Toronto',
     dates: 'May 2022 – Present',
     tags: ['TypeScript', 'React', 'Next.js', 'React Native (Expo)', 'GraphQL', 'XState', 'TailwindCSS', 'TanStack Query'],
     bullets: [
-      'Built features across Dapper\u2019s collectibles products (NBA, NFL, Disney): marketplaces, onboarding, marketing pages, challenges, leaderboards.',
-      'Led the marketplace revamp end-to-end — from blank-slate UX to shipping, then kept iterating.',
-      'Rebuilt FTUE onboarding: took conversion from ~0.4% to 1.6% by stripping friction at every step.',
-      'One of the founding engineers on the shared platform powering all Dapper products: common infrastructure, unified codebase, cross-brand theming.',
+      'Joined as a frontend engineer, grew into a full-stack tech lead, and became a founding engineer of Dapper Labs’ unified web and mobile collectibles platform, replacing the legacy NBA Top Shot and NFL ALL DAY frontends.',
+      'Acted as DRI for core capabilities shared across Dapper Labs products: marketplace, auctions, set completion, profiles, packs, gifting, activity feeds, and measurement across web, mobile, backend services, and contracts.',
+      'Led Trade-In Auctions end to end across React, Expo, Go, and protobuf contracts, including standings, bid safety, spectator flows, and shared verdict logic.',
+      'Led cross-layer migrations and production incident response; encoded analytics-with-the-feature into the repository constitution and built the Mixpanel reads used by the organization.',
     ],
   },
   {
